@@ -37,8 +37,7 @@ imerg_plot.py, imerg_point.py, decoded.py, imerg_station.py<br>
     Python scripts to output rainfall charts<br>
     The scripts will automatically use all netcdf files under the imerg directory as input<br>
     The scripts will also use rainfall data under the rainfall_data.csv as input<br>
-<br>
-
+    
 streamlines.py<br>
     Python script to output streamlines using the nc file inside era5/<br>
     Subfolders for each available level will be automatically created under streamlines/output if no subfolders are detected <br>
