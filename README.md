@@ -31,5 +31,5 @@ imerg_plot.py, imerg_point.py, decoded.py, imerg_station.py<br>
     Python scripts to output the charts<br>
     The scripts will automatically use all netcdf files under the imerg directory as input<br>
     The scripts will also use rainfall data under the rainfall_data.csv as input<br>
-<br><br>
+<br>
 For this case, 5 days of rainfall data was used, but the script can manage more data as long as the netcdf files are placed in the imerg directory and the column title format in rainfal_data.csv is correct.
