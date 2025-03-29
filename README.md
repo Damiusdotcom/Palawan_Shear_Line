@@ -5,7 +5,7 @@ Plots are overlayed over shapefiles/phprov.shp
 Domain is 4N to 22N, 114E to 130E
 
 Directories and Files:
-imerg 
+imerg \n
     raw netcdf files of IMERG
 imerg_plots
     output plots of IMERG variable "precipitation"
