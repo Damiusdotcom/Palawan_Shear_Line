@@ -5,23 +5,41 @@ Plots are overlayed over shapefiles/phprov.shp
 Domain is 4N to 22N, 114E to 130E
 
 Directories and Files:
+
 imerg \n
+
     raw netcdf files of IMERG
+    
 imerg_plots
+
     output plots of IMERG variable "precipitation"
+    
 imerg_point
+
     point plots of IMERG variable "precipitation" 
+    
 rainfall_actual
+
     point plots of actual recorded rainfall by PAGASA synoptic stations
+    
 bias_imerg-station
+
     bias plot, formula is imerg - station rainfall
+    
 coordinates.csv
+
     latitude and longitude of PAGASA synoptic stations. Column titles should be 'lat' and 'lon'
+    
 rainfall_data.csv
+
     Extracted rainfall data from PAGASA-WD Sycoder. Column titles should be yyyymmdd, 'lat', and 'lon'
+    
 imerg_plot.py, imerg_point.py, decoded.py, imerg_station.py
+
     Python scripts to output the charts
+    
     The scripts will automatically use all netcdf files under the imerg directory as input
+    
     The scripts will also use rainfall data under the rainfall_data.csv as input
 
 For this case, 5 days of rainfall data was used, but the script can manage more data as long as the netcdf files are placed in the imerg directory and the column title format in rainfal_data.csv is correct.
