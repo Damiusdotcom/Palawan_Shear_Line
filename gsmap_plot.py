@@ -15,9 +15,13 @@ os.makedirs(output_dir, exist_ok=True)
 lat_min, lat_max = 4, 22   # Latitude range
 lon_min, lon_max = 114, 130  # Longitude range
 
-# Custom color map and color bar ticks
-cmap = plt.get_cmap("Blues")
-norm = mcolors.BoundaryNorm(boundaries=[0, 1, 2, 4, 6, 9, 11, 14, 17, 21, 24], ncolors=256)
+# Define precipitation thresholds (mm) and corresponding colors
+levels = [0, 1, 10, 25, 50, 100, 200, 300, 500, 700]
+colors = ["#ffffff", "#bab8b8", "#00c5ff", "#6bfb90", "#ffff00", "#ffaa00", "#ff0000", "#ff73df", "#8400a8"]
+
+# Create a custom colormap and norm
+cmap = mcolors.ListedColormap(colors).with_extremes(over="#000000")
+norm = mcolors.BoundaryNorm(levels, cmap.N)
 
 # Loop through each subfolder (each day)
 for day_folder in sorted(os.listdir(data_dir)):
@@ -87,11 +91,11 @@ for day_folder in sorted(os.listdir(data_dir)):
     # Plot rainfall
     cf = ax.pcolormesh(lon, lat, accumulated_rainfall, cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), shading='auto')
 
-    # Add colorbar
-    cbar = plt.colorbar(cf, ax=ax, orientation="vertical", pad=0.02)
-    cbar.set_label("24-Hour Accumulated Rainfall (mm)")
-    cbar.set_ticks([0, 1, 2, 4, 6, 9, 11, 14, 17, 21, 24])  # Set colorbar ticks
-    cbar.ax.invert_yaxis()  # Invert colorbar if desired (highest values at top)
+    # Add a custom color bar
+    cbar = plt.colorbar(cf, ax=ax, orientation="vertical", shrink=0.7, pad=0.02, extend="max")
+    cbar.set_label("Precipitation (mm)")
+    cbar.set_ticks(levels)
+    cbar.set_ticklabels([f"{int(l)}" for l in levels])
 
     # Add title
     ax.set_title(f"24-Hour Accumulated Rainfall - {day_folder}")
