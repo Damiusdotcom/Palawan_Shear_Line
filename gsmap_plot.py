@@ -5,6 +5,8 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import os
 import matplotlib.colors as mcolors
+import shapefile as shp
+from cartopy.io.shapereader import Reader
 
 # Define input and output directories
 data_dir = "gsmap_data"
@@ -87,6 +89,10 @@ for day_folder in sorted(os.listdir(data_dir)):
     ax.add_feature(cfeature.COASTLINE)
     ax.add_feature(cfeature.BORDERS, linestyle=':')
     ax.add_feature(cfeature.LAND, edgecolor='black', facecolor='lightgray')
+    
+    # Overlay shapefile
+    shapefile_path = "shapefiles/phprov.shp"
+    ax.add_geometries(Reader(shapefile_path).geometries(), ccrs.PlateCarree(), edgecolor='black', facecolor='none')
 
     # Plot rainfall
     cf = ax.pcolormesh(lon, lat, accumulated_rainfall, cmap=cmap, norm=norm, transform=ccrs.PlateCarree(), shading='auto')
@@ -97,8 +103,14 @@ for day_folder in sorted(os.listdir(data_dir)):
     cbar.set_ticks(levels)
     cbar.set_ticklabels([f"{int(l)}" for l in levels])
 
+    # Add latitude and longitude bars with 5-degree intervals
+    ax.set_xticks(np.arange(lon_min, lon_max + 1, 5), crs=ccrs.PlateCarree())
+    ax.set_yticks(np.arange(lat_min, lat_max + 1, 5), crs=ccrs.PlateCarree())
+    ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda val, pos: f"{val}\u00b0E"))
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda val, pos: f"{val}\u00b0N"))
+
     # Add title
-    ax.set_title(f"24-Hour Accumulated Rainfall - {day_folder}")
+    ax.set_title(f"GSMAP 24-hour Accumulated Rainfall {day_folder[:4]}-{day_folder[4:6]}-{day_folder[6:]}")
 
     # Save plot
     output_filename = os.path.join(output_dir, f"gsmap_{day_folder}.png")
