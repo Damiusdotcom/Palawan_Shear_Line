@@ -122,7 +122,7 @@ for date in date_columns:
     ax.set_ylabel("")
     
     # Save
-    plt.savefig(f"{output_dir}/bias_{date}.png", dpi=300, bbox_inches="tight")
+    plt.savefig(f"{output_dir}/{date}.png", dpi=300, bbox_inches="tight")
     plt.close()
     
 print(f"Bias plots saved in '{output_dir}'")

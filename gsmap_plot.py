@@ -113,7 +113,7 @@ for day_folder in sorted(os.listdir(data_dir)):
     ax.set_title(f"GSMAP 24-hour Accumulated Rainfall {day_folder[:4]}-{day_folder[4:6]}-{day_folder[6:]}")
 
     # Save plot
-    output_filename = os.path.join(output_dir, f"gsmap_{day_folder}.png")
+    output_filename = os.path.join(output_dir, f"{day_folder}.png")
     plt.savefig(output_filename, dpi=300, bbox_inches='tight')
     plt.close(fig)
 
