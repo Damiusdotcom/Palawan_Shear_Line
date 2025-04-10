@@ -1,23 +1,25 @@
 import xarray as xr
 
-# File path to the NetCDF file
-file_path = 'era5/8c426675800d082614e8c529e1d8b0c1.nc'
+# Set the path to your NetCDF file
+file_path = 'era5/8c426675800d082614e8c529e1d8b0c1.nc'  # Replace with the actual path
 
-# Load the NetCDF file using xarray
+# Open the dataset
 ds = xr.open_dataset(file_path)
 
-# Print all variables and their dimensions
-print("Variables in the NetCDF file:")
-for var in ds.variables:
-    print(f"Variable: {var}")
-    print(f"Dimensions: {ds[var].dims}")
-    print(f"Shape: {ds[var].shape}")
-    print(f"Attributes: {ds[var].attrs}\n")
+# Print basic dataset info
+print("\n📦 Dataset Info:\n")
+print(ds)
 
-# Optionally, print the dimensions of the entire dataset
-print("\nDimensions of the dataset:")
-for dim in ds.dims:
-    print(f"Dimension: {dim}, Size: {ds.dims[dim]}")
+# Print variable names
+print("\n📌 Variables in the dataset:\n")
+for var in ds.variables:
+    print(f" - {var}")
+
+# Optional: Show attributes for each variable
+print("\n📋 Variable Attributes:\n")
+for var in ds.variables:
+    print(f"\n🔹 {var}")
+    print(ds[var].attrs)
 
 # Close the dataset
 ds.close()
