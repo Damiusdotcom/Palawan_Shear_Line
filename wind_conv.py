@@ -12,7 +12,7 @@ from matplotlib.ticker import MaxNLocator  # Import for granular color bar ticks
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # File path to the NetCDF file
-file_path = 'era5/8c426675800d082614e8c529e1d8b0c1.nc'
+file_path = 'era5/era5_file.nc'
 
 # Load the NetCDF file using xarray
 ds = xr.open_dataset(file_path)

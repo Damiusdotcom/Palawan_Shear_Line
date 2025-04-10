@@ -7,7 +7,7 @@ import os
 import matplotlib.colors as mcolors
 
 # Define file path
-nc_file = "era5/8c426675800d082614e8c529e1d8b0c1.nc"
+nc_file = "era5/era5_file.nc"
 
 # Open dataset
 dataset = xr.open_dataset(nc_file)
