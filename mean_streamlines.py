@@ -177,9 +177,19 @@ skip = (slice(None, None, 5), slice(None, None, 5))
 q = ax2.quiver(lon_grid[skip], lat_grid[skip], u_ndjfm[skip], v_ndjfm[skip],
                transform=ccrs.PlateCarree(), scale=200, width=0.005, color='blue')
 
-# Reference arrow: place it inside the axes (e.g., bottom right corner)
-ax2.quiverkey(q, X=0.85, Y=0.05, U=10,
-              label='10 m/s', labelpos='E', coordinates='axes')
+# Move arrow to higher and more left position
+ref_lon = lon.min() + 2  # further left (increase to move right)
+ref_lat = lat.max() - 0.5  # higher (decrease to move even higher)
+
+# 2. Draw the reference arrow (pointing east)
+ax2.quiver(ref_lon, ref_lat, 10, 0,
+           transform=ccrs.PlateCarree(),
+           scale=200, width=0.005, color='blue')
+
+# 3. Add a label right next to the arrow
+ax2.text(ref_lon + 1.5, ref_lat, '10 m/s',
+         transform=ccrs.PlateCarree(),
+         fontsize=10, va='center')
 
 # Adjust layout to ensure the key isn’t cut off
 plt.tight_layout(rect=[0, 0.05, 1, 1])
