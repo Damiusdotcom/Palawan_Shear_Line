@@ -157,9 +157,9 @@ final_u = sum(all_ndjfm_u) / len(all_ndjfm_u)
 final_v = sum(all_ndjfm_v) / len(all_ndjfm_v)
 
 final_streamline_path = os.path.join(output_dir, '9yr_NDJFM_streamline.png')
-plot_streamlines(final_u, final_v, '2012-2020 NDJFM Mean 10-m Streamlines', final_streamline_path)
+plot_streamlines(final_u, final_v, '2012-2020 NDJFM Mean 10-m Streamlines', final_streamline_path) #change title
 
 final_quiver_path = os.path.join(output_dir, '9yr_NDJFM_quiver.png')
-plot_quiver(final_u, final_v, lon, lat, '2012-2020 NDJFM Mean 10-m Wind Vectors', final_quiver_path)
+plot_quiver(final_u, final_v, lon, lat, '2012-2020 NDJFM Mean 10-m Wind Vectors', final_quiver_path) #change title
 
 print('All done!')
