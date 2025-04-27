@@ -156,10 +156,13 @@ for year in years:
 final_u = sum(all_ndjfm_u) / len(all_ndjfm_u)
 final_v = sum(all_ndjfm_v) / len(all_ndjfm_v)
 
-final_streamline_path = os.path.join(output_dir, '9yr_NDJFM_streamline.png')
-plot_streamlines(final_u, final_v, '2012-2020 NDJFM Mean 10-m Streamlines', final_streamline_path) #change title
+# After calculating the 30-year (or however many years) mean u and v components:
+num_years = len(years)
 
-final_quiver_path = os.path.join(output_dir, '9yr_NDJFM_quiver.png')
-plot_quiver(final_u, final_v, lon, lat, '2012-2020 NDJFM Mean 10-m Wind Vectors', final_quiver_path) #change title
+final_streamline_path = os.path.join(output_dir, f'{num_years}yr_NDJFM_streamline.png')
+plot_streamlines(final_u, final_v, f'{num_years} NDJFM Mean 10-m Streamlines', final_streamline_path)
+
+final_quiver_path = os.path.join(output_dir, f'{num_years}yr_NDJFM_quiver.png')
+plot_quiver(final_u, final_v, lon, lat, f'{num_years} NDJFM Mean 10-m Wind Vectors', final_quiver_path)
 
 print('All done!')
