@@ -12,7 +12,7 @@ input_dir = r'Y:\wfs_shared\Personnel Files\DJEV\Palawan_Shear_Line\mean_streaml
 output_dir = 'mean_wind_30years_output'
 os.makedirs(output_dir, exist_ok=True)
 
-start_year = 2012
+start_year = 1991
 end_year = 2020  # Last year to start NDJFM (will fetch until Mar 2021)
 years = np.arange(start_year, end_year + 1)
 
@@ -100,6 +100,33 @@ def plot_quiver(u, v, lon, lat, title, save_path):
     print(f"Quiver plot saved: {save_path}")
     plt.close(fig)
 
+def save_mean_to_netcdf(u_mean, v_mean, lon, lat, save_path):
+    """Save the mean u and v wind components into a NetCDF file with metadata."""
+    ds = xr.Dataset(
+        {
+            "u10_mean": (["latitude", "longitude"], u_mean.values, {
+                "long_name": "30-year mean 10-m zonal wind component",
+                "units": "m s-1"
+            }),
+            "v10_mean": (["latitude", "longitude"], v_mean.values, {
+                "long_name": "30-year mean 10-m meridional wind component",
+                "units": "m s-1"
+            }),
+        },
+        coords={
+            "longitude": ("longitude", lon, {"units": "degrees_east"}),
+            "latitude": ("latitude", lat, {"units": "degrees_north"}),
+        },
+        attrs={
+            "description": f"{num_years}-year NDJFM mean 10-m wind components",
+            "created_by": "DJEV/Damiusdotcom",
+            "note": "ND from previous year, JFM from current year.",
+            "conventions": "CF-1.6",
+        }
+    )
+    ds.to_netcdf(save_path)
+    print(f"Mean wind components saved to NetCDF: {save_path}")
+
 # ========== PROCESS EACH YEAR ==========
 for year in years:
     print(f'Processing {year} NDJFM...')
@@ -160,9 +187,15 @@ final_v = sum(all_ndjfm_v) / len(all_ndjfm_v)
 num_years = len(years)
 
 final_streamline_path = os.path.join(output_dir, f'{num_years}yr_NDJFM_streamline.png')
-plot_streamlines(final_u, final_v, f'{num_years} NDJFM Mean 10-m Streamlines', final_streamline_path)
+plot_streamlines(final_u, final_v, f'{num_years}-year NDJFM Mean 10-m Streamlines', final_streamline_path)
 
 final_quiver_path = os.path.join(output_dir, f'{num_years}yr_NDJFM_quiver.png')
-plot_quiver(final_u, final_v, lon, lat, f'{num_years} NDJFM Mean 10-m Wind Vectors', final_quiver_path)
+plot_quiver(final_u, final_v, lon, lat, f'{num_years}-year NDJFM Mean 10-m Wind Vectors', final_quiver_path)
+
+# Set the dynamic filename for the output NetCDF file
+final_netcdf_path = os.path.join(output_dir, f'{num_years}yr_NDJFM_mean_wind.nc')
+
+# Call the function to save the data as NetCDF
+save_mean_to_netcdf(final_u, final_v, lon, lat, final_netcdf_path)
 
 print('All done!')
