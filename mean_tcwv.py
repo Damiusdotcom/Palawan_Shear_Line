@@ -12,11 +12,33 @@ def compute_tcrw_mean_dask(files):
     total_count = 0
 
     for file in files:
-        ds = xr.open_dataset(file, chunks={'valid_time': 10})  # Dask-friendly chunking
-        tcrw = ds['tcrw']  # Extract total column rain water
+        
+        ds = xr.open_dataset(file)
+        ds = ds.chunk({'valid_time': 10})
 
-        sum_this_file = tcrw.sum(dim='valid_time', skipna=True)
-        count_this_file = tcrw['valid_time'].size
+        tcrw = ds['tcrw']
+
+        # Decode time coordinate to datetime64 for filtering
+        time = xr.decode_cf(ds).valid_time
+
+        # Filter for ND 1991 and JFM 2021 months only
+        time_filtered = time[
+            ((time.dt.year == 1991) & (time.dt.month.isin([11, 12]))) |
+            ((time.dt.year == 2021) & (time.dt.month.isin([1, 2, 3])))
+        ]
+
+        if time_filtered.size == 0:
+            ds.close()
+            continue  # skip if no matching dates in this file
+
+        # Select data for filtered times
+        tcrw_filtered = tcrw.sel(valid_time=time_filtered)
+
+        # Sum over time dimension
+        sum_this_file = tcrw_filtered.sum(dim='valid_time', skipna=True)
+
+        # Correct count: get size of filtered time dimension
+        count_this_file = tcrw_filtered.sizes['valid_time']
 
         if total_sum is None:
             total_sum = sum_this_file
@@ -24,6 +46,11 @@ def compute_tcrw_mean_dask(files):
             total_sum += sum_this_file
 
         total_count += count_this_file
+
+        ds.close()
+
+    if total_count == 0:
+        raise ValueError("No matching NDJFM dates found in the data.")
 
     mean_tcrw = total_sum / total_count
 
@@ -45,7 +72,7 @@ def plot_tcrw(tcrw_mean, output_path):
     ax.add_feature(cfeature.RIVERS)
 
     contour = ax.contourf(tcrw_mean.longitude, tcrw_mean.latitude, tcrw_mean,
-                          levels=np.arange(0, 150, 5), cmap='Blues', extend='both')
+                          levels=np.arange(0, 1.5, 0.05), cmap='OrRd', extend='both')
 
     cbar = plt.colorbar(contour, ax=ax, orientation='horizontal', pad=0.05)
     cbar.set_label('Total Column Rain Water (kg/m²)')
