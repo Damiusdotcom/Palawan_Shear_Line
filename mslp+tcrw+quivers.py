@@ -55,7 +55,7 @@ def plot_mslp_with_quivers(mslp, u10, v10, time, index, extent, output_dir):
     ax.quiver(
         u10.longitude.values[::skip], u10.latitude.values[::skip],
         u10_t[::skip, ::skip], v10_t[::skip, ::skip],
-        scale=700, width=0.002, color='black',
+        scale=200, width=0.005, color='black',
         transform=ccrs.PlateCarree()
     )
 
@@ -97,7 +97,7 @@ def plot_tcrw_with_quivers(tcrw, u10, v10, time, index, extent, output_dir):
     ax.quiver(
         u10.longitude.values[::skip], u10.latitude.values[::skip],
         u10_t[::skip, ::skip], v10_t[::skip, ::skip],
-        scale=700, width=0.002, color='black',
+        scale=200, width=0.005, color='black',
         transform=ccrs.PlateCarree()
     )
 
