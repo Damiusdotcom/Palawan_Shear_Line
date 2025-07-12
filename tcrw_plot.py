@@ -7,7 +7,7 @@ import os
 
 def plot_tcrw_with_quivers(tcrw_file, wind_file, extent, output_path, title):
     """
-    Plots Total Column Rain Water (TCWV) with 10-m wind quiver overlay.
+    Plots Total Column Rain Water (TCRW) with 10-m wind quiver overlay.
 
     Parameters:
         tcrw_file (str): Path to NetCDF file containing 'tcrw'.
@@ -18,7 +18,7 @@ def plot_tcrw_with_quivers(tcrw_file, wind_file, extent, output_path, title):
     """
     lon_min, lon_max, lat_min, lat_max = extent
 
-    # Load and clip TCWV
+    # Load and clip TCRW
     ds_tcrw = xr.open_dataset(tcrw_file)
     ds_tcrw = ds_tcrw.sel(latitude=slice(lat_max, lat_min), longitude=slice(lon_min, lon_max))
     tcrw = ds_tcrw['tcrw']
@@ -42,7 +42,7 @@ def plot_tcrw_with_quivers(tcrw_file, wind_file, extent, output_path, title):
     gl.top_labels = False
     gl.right_labels = False
 
-    # TCWV contour plot
+    # TCRW contour plot
     contour = ax.contourf(ds_tcrw.longitude, ds_tcrw.latitude, tcrw,
                           levels=np.arange(0, 80, 2), cmap='Blues', extend='both')
 
@@ -62,16 +62,16 @@ def plot_tcrw_with_quivers(tcrw_file, wind_file, extent, output_path, title):
     # Title and save
     ax.set_title(title, fontsize=14)
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"TCWV + Quiver plot saved: {output_path}")
+    print(f"TCRW + Quiver plot saved: {output_path}")
     plt.close()
 
 
 # ======= CONFIGURATION =======
-tcrw_nc_file = "mean_tcwv_output/mean_tcrw_mean.nc"
+tcrw_nc_file = "mean_tcrw_output/mean_tcrw_mean.nc"
 wind_nc_file = "mean_wind_30years_output/30yr_NDJFM_mean_wind.nc"
 
 extent = [100, 150, 0, 60]  # Define the area of interest (Southeast Asia)
-output_dir = "tcwv_plot_outputs"
+output_dir = "tcrw_plot_outputs"
 os.makedirs(output_dir, exist_ok=True)
 
 output_file = os.path.join(output_dir, "mean_tcrw_with_wind_vectors.png")

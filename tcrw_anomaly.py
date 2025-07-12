@@ -10,7 +10,7 @@ event_tcrw_file = r'Y:\wfs_shared\Personnel Files\DJEV\Palawan_Shear_Line\event\
 event_u10_file = r'Y:\wfs_shared\Personnel Files\DJEV\Palawan_Shear_Line\event\u10.nc'
 event_v10_file = r'Y:\wfs_shared\Personnel Files\DJEV\Palawan_Shear_Line\event\v10.nc'
 
-clim_tcrw_file = r'mean_tcwv_output\mean_tcrw_mean.nc'
+clim_tcrw_file = r'mean_tcrw_output\mean_tcrw_mean.nc'
 clim_wind_file = r'mean_wind_30years_output\30yr_NDJFM_mean_wind.nc'
 
 output_dir = 'tcrw_anomaly_output'

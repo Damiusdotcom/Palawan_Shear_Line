@@ -88,8 +88,8 @@ def save_tcrw_mean_netcdf(tcrw_mean, output_path):
     tcrw_mean.to_netcdf(output_path)
 
 if __name__ == "__main__":
-    input_folder = r'Y:\wfs_shared\Personnel Files\DJEV\Palawan_Shear_Line\TCWV'  # folder with all yearly NetCDF files
-    output_folder = "mean_tcwv_output"
+    input_folder = r'Y:\wfs_shared\Personnel Files\DJEV\Palawan_Shear_Line\TCRW'  # folder with all yearly NetCDF files
+    output_folder = "mean_tcrw_output"
     os.makedirs(output_folder, exist_ok=True)
 
     output_plot = os.path.join(output_folder, "mean_tcrw_plot.png")
@@ -106,4 +106,4 @@ if __name__ == "__main__":
     save_tcrw_mean_netcdf(tcrw_mean, output_netcdf)
     plot_tcrw(tcrw_mean, output_plot)
 
-    print("✅ Mean TCWV NetCDF and plot saved successfully.")
+    print("✅ Mean TCRW NetCDF and plot saved successfully.")
