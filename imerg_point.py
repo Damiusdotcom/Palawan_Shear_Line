@@ -11,7 +11,7 @@ import cartopy.feature as cfeature
 from datetime import datetime
 
 # === CONFIGURATION ===
-input_dir = "imerg"
+input_dir = "imerg_finalrun"
 output_dir = "imerg_point_output"
 csv_file = "coordinates.csv"
 shapefile_path = "shapefiles/phprov.shp"

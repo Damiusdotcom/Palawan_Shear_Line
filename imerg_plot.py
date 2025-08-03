@@ -15,7 +15,7 @@ from datetime import datetime
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # === CONFIGURATION ===
-input_dir = "imerg"
+input_dir = "imerg_finalrun"
 output_dir = "imerg_plot_output"
 shapefile_path = "shapefiles/phprov.shp"
 os.makedirs(output_dir, exist_ok=True)
