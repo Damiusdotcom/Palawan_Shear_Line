@@ -15,10 +15,28 @@ def plot_mslp_wind_anomaly(mslp_anom, u_anom, v_anom, lon, lat, time, index, ext
     ax.add_feature(cfeature.LAND.with_scale('10m'), facecolor='lightgray')
     ax.add_feature(cfeature.BORDERS.with_scale('10m'), linestyle=':')
 
+    lon_min, lon_max, lat_min, lat_max = extent
+
+    # Compute ticks strictly within extent, multiples of 5
+    lon_ticks = np.arange(np.ceil(lon_min / 10) * 10, lon_max + 1, 10)
+    lat_ticks = np.arange(np.ceil(lat_min / 10) * 10, lat_max + 1, 10)
+
+    ax.set_xticks(lon_ticks, crs=ccrs.PlateCarree())
+    ax.set_yticks(lat_ticks, crs=ccrs.PlateCarree())
+
+    ax.xaxis.set_major_formatter(plt.FuncFormatter(
+        lambda v, pos: f"{int(v)}°E"
+    ))
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(
+        lambda v, pos: f"{int(v)}°N"
+    ))
+
+    ax.tick_params(axis='both', labelsize=10)
+
     # MSLP anomaly shading
     pcm = ax.pcolormesh(
         lon2d, lat2d, mslp_anom,
-        cmap='coolwarm_r',
+        cmap='coolwarm',
         vmin=-30, vmax=30,
         shading='auto',
         transform=ccrs.PlateCarree()

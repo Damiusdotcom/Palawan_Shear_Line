@@ -4,6 +4,7 @@ import xarray as xr
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
+import matplotlib.colors as mcolors
 
 # Input/output file paths
 event_tcwv_file = r'Y:\wfs_shared\Personnel Files\DJEV\Palawan_Shear_Line\event\tcwv.nc'
@@ -56,16 +57,47 @@ for i, time in enumerate(times):
     ax.add_feature(cfeature.LAND.with_scale('10m'), facecolor='lightgray')
     ax.add_feature(cfeature.BORDERS.with_scale('10m'), linestyle=':')
 
+    lon_min, lon_max, lat_min, lat_max = extent
+
+    # Compute ticks strictly within extent, multiples of 5
+    lon_ticks = np.arange(np.ceil(lon_min / 10) * 10, lon_max + 1, 10)
+    lat_ticks = np.arange(np.ceil(lat_min / 10) * 10, lat_max + 1, 10)
+
+    ax.set_xticks(lon_ticks, crs=ccrs.PlateCarree())
+    ax.set_yticks(lat_ticks, crs=ccrs.PlateCarree())
+
+    ax.xaxis.set_major_formatter(plt.FuncFormatter(
+        lambda v, pos: f"{int(v)}°E"
+    ))
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(
+        lambda v, pos: f"{int(v)}°N"
+    ))
+
+    ax.tick_params(axis='both', labelsize=10)
+
     # Plot TCWV anomaly
     lon2d, lat2d = np.meshgrid(lon, lat)
+    # Define brown to violet colors
+    colors = [
+        "#5D3A00",  # dark brown (negative extreme)
+        "#B8860B",  # lighter brown
+        "#F5DEB3",  # pale brown (near zero)
+        "#E6E6FA",  # pale violet (near zero)
+        "#9370DB",  # medium violet
+        "#4B0082"   # dark violet (positive extreme)
+    ]
+
+    # Create a ListedColormap and a BoundaryNorm to center zero
+    cmap = mcolors.LinearSegmentedColormap.from_list("brown_violet", colors)
+
     pcm = ax.pcolormesh(
         lon2d, lat2d, tcwv_anom,
-        cmap='bwr_r',
-        vmin=-10, vmax=10,  # Adjusted for typical TCWV ranges
+        cmap=cmap,
+        vmin=-20, vmax=20,
         shading='auto',
         transform=ccrs.PlateCarree()
     )
-    plt.colorbar(pcm, ax=ax, label='TCWV Anomaly (kg/m²)', orientation='vertical', fraction=0.046, pad=0.04)
+    plt.colorbar(pcm, ax=ax, label='TCWV Anomaly (mm)', orientation='vertical', fraction=0.046, pad=0.04)
 
     # Wind anomaly quivers
     skip = 5

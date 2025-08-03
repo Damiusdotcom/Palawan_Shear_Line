@@ -64,12 +64,28 @@ def plot_precipitation(nc_path):
 
     ax.set_title(f"IMERG 24-hour Accumulated Rainfall {date}", fontsize=14)
 
-    lon_ticks = np.arange(lon_min, lon_max + 1, 5)
-    lat_ticks = np.arange(lat_min, lat_max + 1, 5)
+    # Assuming lon_min, lon_max, lat_min, lat_max are already defined
+    lon_ticks = np.arange(
+        ((lon_min + 4) // 5) * 5,  # Round up to nearest multiple of 5
+        ((lon_max) // 5) * 5 + 1,  # Round down to nearest multiple of 5
+        5
+    )
+    lat_ticks = np.arange(
+        ((lat_min + 4) // 5) * 5, 
+        ((lat_max) // 5) * 5 + 1, 
+        5
+    )
+
     ax.set_xticks(lon_ticks, crs=ccrs.PlateCarree())
     ax.set_yticks(lat_ticks, crs=ccrs.PlateCarree())
-    ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, pos: f"{v:.1f}°E"))
-    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, pos: f"{v:.1f}°N"))
+
+    ax.xaxis.set_major_formatter(plt.FuncFormatter(
+        lambda v, pos: f"{abs(v):.0f}°{'E' if v >= 0 else 'W'}"
+    ))
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(
+        lambda v, pos: f"{abs(v):.0f}°{'N' if v >= 0 else 'S'}"
+    ))
+
     ax.tick_params(axis="both", labelsize=10)
     ax.set_xlabel("")
     ax.set_ylabel("")
