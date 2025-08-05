@@ -2,7 +2,7 @@ import xarray as xr
 
 # Set the path to your NetCDF file
 
-file_path = r'imerg\3B-DAY-L.MS.MRG.3IMERG.20250207-S000000-E235959.V07B.nc4'  # Replace with the actual path
+file_path = r'imerg\3B-DAY-L.MS.MRG.3IMERG.20250204-S000000-E235959.V07B.nc4' # Replace with the actual path
 
 # Open the dataset
 ds = xr.open_dataset(file_path)
