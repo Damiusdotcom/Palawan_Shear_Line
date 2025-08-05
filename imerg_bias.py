@@ -20,6 +20,10 @@ station_file = "rainfall_data.csv"
 shapefile_path = "shapefiles/phprov.shp"
 os.makedirs(output_dir, exist_ok=True)
 
+# Fixed domain bounds (adjust as needed)
+lat_min, lat_max = 5, 21
+lon_min, lon_max = 113, 128
+
 # Load station data
 station_df = pd.read_csv(station_file)
 station_df.columns = station_df.columns.str.strip()
@@ -62,25 +66,38 @@ def plot_imerg_station_bias(imerg_path):
 
     # Create plot
     fig, ax = plt.subplots(figsize=(8, 6), subplot_kw={"projection": ccrs.PlateCarree()})
-    ax.set_extent([
-        station_df["lon"].min() - 1, station_df["lon"].max() + 1,
-        station_df["lat"].min() - 1, station_df["lat"].max() + 1
-    ], crs=ccrs.PlateCarree())
 
-    ax.add_feature(cfeature.BORDERS, linestyle=":")
-    ax.add_feature(cfeature.COASTLINE)
-    shapefile.boundary.plot(ax=ax, edgecolor="black", linewidth=1, transform=ccrs.PlateCarree())
+    # Set fixed domain extent
+    ax.set_extent([lon_min, lon_max, lat_min, lat_max], crs=ccrs.PlateCarree())
 
-    # Gridlines
-    gl = ax.gridlines(draw_labels=True, linestyle="--", linewidth=0.5)
-    gl.top_labels = False
-    gl.right_labels = False
+    ax.add_feature(cfeature.BORDERS, linestyle=":", zorder=1)
+    ax.add_feature(cfeature.COASTLINE, zorder=1)
+    shapefile.boundary.plot(ax=ax, edgecolor="black", linewidth=1, transform=ccrs.PlateCarree(), zorder=1)
 
-    # Scatter plot
+    # Set ticks and labels (multiples of 5, only inside domain)
+    all_lon_ticks = np.arange((lon_min // 5) * 5, ((lon_max // 5) + 2) * 5, 5)
+    lon_ticks = all_lon_ticks[(all_lon_ticks >= lon_min) & (all_lon_ticks <= lon_max)]
+
+    all_lat_ticks = np.arange((lat_min // 5) * 5, ((lat_max // 5) + 2) * 5, 5)
+    lat_ticks = all_lat_ticks[(all_lat_ticks >= lat_min) & (all_lat_ticks <= lat_max)]
+
+    ax.set_xticks(lon_ticks, crs=ccrs.PlateCarree())
+    ax.set_yticks(lat_ticks, crs=ccrs.PlateCarree())
+    ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, pos: f"{v:.0f}°E"))
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, pos: f"{v:.0f}°N"))
+    ax.tick_params(axis="both", labelsize=10)
+    ax.set_xlabel("")
+    ax.set_ylabel("")
+    ax.tick_params(axis="both", labelsize=10)
+    ax.set_xlabel("")
+    ax.set_ylabel("")
+
+    # Scatter plot with higher zorder
     sc = ax.scatter(
         station_df["lon"], station_df["lat"],
         c=station_df["bias"], cmap=cmap, norm=norm,
-        edgecolor="black", s=50, transform=ccrs.PlateCarree()
+        edgecolor="black", s=50, transform=ccrs.PlateCarree(),
+        zorder=2
     )
 
     # Colorbar
@@ -89,7 +106,8 @@ def plot_imerg_station_bias(imerg_path):
     cbar.set_ticks(levels)
     cbar.set_ticklabels([str(l) for l in levels])
 
-    ax.set_title(f"(IMERG - Station) Bias ({date_str})", fontsize=14)
+    ax.set_title(f"IMERG - Station Bias", fontsize=14)
+
     plt.savefig(os.path.join(output_dir, f"{date_col}.png"), dpi=300, bbox_inches="tight")
     plt.close()
     print(f"Processed: {date_str}")

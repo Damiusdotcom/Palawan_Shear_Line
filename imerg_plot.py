@@ -21,8 +21,8 @@ shapefile_path = "shapefiles/phprov.shp"
 os.makedirs(output_dir, exist_ok=True)
 
 # Map region boundaries
-lat_min, lat_max = 4, 22
-lon_min, lon_max = 114, 130
+lat_min, lat_max = 5, 21
+lon_min, lon_max = 113, 128
 
 # Color thresholds and colormap
 levels = [0, 1, 10, 25, 50, 100, 200, 300, 500, 700]
@@ -62,7 +62,7 @@ def plot_precipitation(nc_path):
     ax.coastlines()
     ax.add_feature(cfeature.BORDERS, linestyle=":")
 
-    ax.set_title(f"IMERG 24-hour Accumulated Rainfall {date}", fontsize=14)
+    ax.set_title(f"IMERG 24-hour Accumulated Rainfall", fontsize=14)
 
     # Assuming lon_min, lon_max, lat_min, lat_max are already defined
     lon_ticks = np.arange(

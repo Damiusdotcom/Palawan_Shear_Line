@@ -18,8 +18,8 @@ shapefile_path = "shapefiles/phprov.shp"
 os.makedirs(output_dir, exist_ok=True)
 
 # Region bounds
-lat_min, lat_max = 4, 22
-lon_min, lon_max = 114, 130
+lat_min, lat_max = 5, 21
+lon_min, lon_max = 113, 128
 
 # Color thresholds and map
 levels = [0, 1, 10, 25, 50, 100, 200, 300, 500, 700]
@@ -56,23 +56,32 @@ def plot_imerg_points(nc_path):
     fig, ax = plt.subplots(figsize=(8, 6), subplot_kw={"projection": ccrs.PlateCarree()})
     ax.set_extent([lon_min, lon_max, lat_min, lat_max], crs=ccrs.PlateCarree())
 
-    ax.add_feature(cfeature.BORDERS, linestyle=":")
-    ax.add_feature(cfeature.COASTLINE)
-    shapefile.boundary.plot(ax=ax, edgecolor="black", linewidth=1, transform=ccrs.PlateCarree())
+    ax.add_feature(cfeature.BORDERS, linestyle=":", zorder=1)
+    ax.add_feature(cfeature.COASTLINE, zorder=1)
+    shapefile.boundary.plot(ax=ax, edgecolor="black", linewidth=1, transform=ccrs.PlateCarree(), zorder=1)
 
     sc = ax.scatter(
         coords_df["lon"], coords_df["lat"],
         c=coords_df["precip"], cmap=cmap, norm=norm,
-        edgecolor="black", s=50, transform=ccrs.PlateCarree()
+        edgecolor="black", s=50, transform=ccrs.PlateCarree(),
+        zorder=2  # <- higher zorder for scatter points
     )
+    
+    # Set ticks and labels (multiples of 5, only inside domain)
+    all_lon_ticks = np.arange((lon_min // 5) * 5, ((lon_max // 5) + 2) * 5, 5)
+    lon_ticks = all_lon_ticks[(all_lon_ticks >= lon_min) & (all_lon_ticks <= lon_max)]
 
-    # Set ticks and labels
-    lon_ticks = np.arange(lon_min, lon_max + 1, 5)
-    lat_ticks = np.arange(lat_min, lat_max + 1, 5)
+    all_lat_ticks = np.arange((lat_min // 5) * 5, ((lat_max // 5) + 2) * 5, 5)
+    lat_ticks = all_lat_ticks[(all_lat_ticks >= lat_min) & (all_lat_ticks <= lat_max)]
+
     ax.set_xticks(lon_ticks, crs=ccrs.PlateCarree())
     ax.set_yticks(lat_ticks, crs=ccrs.PlateCarree())
-    ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, pos: f"{v:.1f}°E"))
-    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, pos: f"{v:.1f}°N"))
+    ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, pos: f"{v:.0f}°E"))
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, pos: f"{v:.0f}°N"))
+    ax.tick_params(axis="both", labelsize=10)
+    ax.set_xlabel("")
+    ax.set_ylabel("")
+
     ax.tick_params(axis="both", labelsize=10)
     ax.set_xlabel("")
     ax.set_ylabel("")
@@ -82,7 +91,7 @@ def plot_imerg_points(nc_path):
     cbar.set_ticks(levels)
     cbar.set_ticklabels([str(l) for l in levels])
 
-    ax.set_title(f"IMERG 24-hour Accumulated Rainfall ({date_str})", fontsize=14)
+    ax.set_title(f"IMERG 24-hour Accumulated Rainfall", fontsize=14)
 
     plt.savefig(os.path.join(output_dir, f"{date_file}.png"), dpi=300, bbox_inches="tight")
     plt.close()
