@@ -18,7 +18,7 @@ clim_wind_file = r'mean_wind_30years_output\30yr_NDJFM_mean_wind.nc'
 output_dir = 'tcwv_anomaly_output'
 os.makedirs(output_dir, exist_ok=True)
 
-extent = [100, 150, 0, 60]
+extent = [100, 150, 0, 30]
 
 # Load datasets
 ds_tcwv = xr.open_dataset(event_tcwv_file)

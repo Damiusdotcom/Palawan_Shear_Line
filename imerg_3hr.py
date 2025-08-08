@@ -24,38 +24,24 @@ nc_files = sorted(
     key=get_file_time
 )
 
-# Group into 3-hour chunks (6 files)
-group_size = 6
+# Prepare to collect results
 results = []
 
-for i in range(0, len(nc_files), group_size):
-    group = nc_files[i:i + group_size]
-    if len(group) < group_size:
-        break  # Skip incomplete groups
-
-    rainfall_total = 0.0
-    start_time = None
-
-    for file in group:
-        try:
-            ds = xr.open_dataset(file)
-            rain_data = ds['precipitation']
-            rainfall = rain_data.sel(lat=target_lat, lon=target_lon, method='nearest').values.item()
-            rainfall_total += rainfall
-            if start_time is None:
-                start_time = np.datetime64(ds['time'].values[0])
-            ds.close()
-        except Exception as e:
-            print(f"Error processing {file}: {e}")
-            break
-
-    if start_time is not None:
-        ts_str = str(start_time)
-        mmddhhmm = f"{ts_str[5:7]}-{ts_str[8:10]}-{ts_str[11:13]}{ts_str[14:16]}"
-        results.append([mmddhhmm, f"{rainfall_total:.2f}"])
+# Process each file individually
+for file in nc_files:
+    try:
+        ds = xr.open_dataset(file)
+        rain_data = ds['precipitation']
+        rainfall = rain_data.sel(lat=target_lat, lon=target_lon, method='nearest').values.item()
+        timestamp = str(ds['time'].values[0])
+        print(f"{timestamp}: {rainfall:.2f} mm")
+        results.append([timestamp, f"{rainfall:.2f}"])
+        ds.close()
+    except Exception as e:
+        print(f"Error processing {file}: {e}")
 
 # Write to CSV
-csv_file = 'imerg_3hr.csv'
+csv_file = 'imerg_30min.csv'
 with open(csv_file, mode='w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(['Timestamp', 'Rainfall_mm'])
