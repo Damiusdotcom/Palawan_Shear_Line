@@ -2,7 +2,7 @@ import xarray as xr
 
 # Set the path to your NetCDF file
 
-file_path = r'event\t_event.nc' # Replace with the actual path
+file_path = r'event\q_event.nc' # Replace with the actual path
 
 # Open the dataset
 ds = xr.open_dataset(file_path)
